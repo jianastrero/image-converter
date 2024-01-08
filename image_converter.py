@@ -46,7 +46,6 @@ def parse_arguments():
 def is_format_supported(format: str):
     supported_formats = Image.registered_extensions().keys()
     supported_formats = [x[1:].lower() for x in supported_formats]
-    print(supported_formats)
     return format.lower() in supported_formats
 
 
@@ -98,6 +97,7 @@ def main():
             size = max(Image.open(input_path).size)
 
         if os.path.exists(output_path) and not overwrite:
+            print(f'Skipped: {output_path}, already exists')
             continue
 
         if convert_image(input_path, output_path, format, quality, size):
