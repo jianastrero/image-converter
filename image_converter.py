@@ -19,6 +19,7 @@
 #  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.
+import traceback
 
 from PIL import Image
 import PIL
@@ -42,13 +43,22 @@ def parse_arguments():
     return parser.parse_args()
 
 
+def is_format_supported(format: str):
+    supported_formats = Image.registered_extensions().keys()
+    supported_formats = [x[1:].lower() for x in supported_formats]
+    print(supported_formats)
+    return format.lower() in supported_formats
+
+
 def convert_image(input_path, output_path, format, quality, size):
     try:
         img = Image.open(input_path)
         img = img.resize((size, size), PIL.Image.LANCZOS)
         img.save(output_path, format=format, quality=quality)
-    except Exception as e:
-        print(e)
+        return True
+    except Exception:
+        traceback.print_exc()
+        return False
 
 
 def main():
@@ -64,6 +74,10 @@ def main():
 
     if not os.path.exists(input_dir):
         print('Input directory does not exist')
+        return
+
+    if not is_format_supported(format):
+        print(f'Output format "{format}" is not supported')
         return
 
     if not os.path.exists(output_dir):
@@ -86,8 +100,8 @@ def main():
         if os.path.exists(output_path) and not overwrite:
             continue
 
-        convert_image(input_path, output_path, format, quality, size)
-        print(f'Converted: {output_path} ({size}x{size}) (quality: {quality}) (format: {format})')
+        if convert_image(input_path, output_path, format, quality, size):
+            print(f'Converted: {output_path} ({size}x{size}) (quality: {quality}) (format: {format})')
 
 
 if __name__ == "__main__":
