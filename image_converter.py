@@ -28,7 +28,8 @@ import argparse
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description='Convert images to a specific format')
+    parser = argparse.ArgumentParser(description='This script converts images to other formats using Python. It uses '
+                                                 'the Pillow library to convert images.')
 
     parser.add_argument('--input_dir', type=str, default='input', help='Input directory')
     parser.add_argument('--output_dir', type=str, default='output', help='Output directory')
