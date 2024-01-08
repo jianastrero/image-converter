@@ -29,6 +29,18 @@ import argparse
 
 
 def parse_arguments():
+    """
+    This function parses command-line arguments using argparse module.
+    It sets up the following arguments:
+    --input_dir: The directory where the input images are located. Default is 'input'.
+    --output_dir: The directory where the converted images will be saved. Default is 'output'.
+    --format: The format of the output images. Default is 'png'.
+    --quality: The quality of the output images. Default is 100.
+    --size: The size of the output images. Default is 0.
+    --recursive: Whether to search for images in the input directory recursively. Default is False.
+    --overwrite: Whether to overwrite existing images in the output directory. Default is False.
+    Returns the parsed arguments.
+    """
     parser = argparse.ArgumentParser(description='This script converts images to other formats using Python. It uses '
                                                  'the Pillow library to convert images.')
 
@@ -44,12 +56,23 @@ def parse_arguments():
 
 
 def is_format_supported(format: str):
+    """
+    This function checks if the given format is supported by the Pillow library.
+    It does this by comparing the format to the list of registered extensions in Pillow.
+    Returns True if the format is supported, False otherwise.
+    """
     supported_formats = Image.registered_extensions().keys()
     supported_formats = [x[1:].lower() for x in supported_formats]
     return format.lower() in supported_formats
 
 
 def convert_image(input_path, output_path, format, quality, size):
+    """
+    This function converts an image from one format to another.
+    It opens the image at the input path, resizes it to the given size, and saves it in the given format at the output path.
+    If an exception occurs during this process, it prints the traceback and returns False.
+    Otherwise, it returns True.
+    """
     try:
         img = Image.open(input_path)
         img = img.resize((size, size), PIL.Image.LANCZOS)
@@ -61,6 +84,13 @@ def convert_image(input_path, output_path, format, quality, size):
 
 
 def main():
+    """
+    This is the main function of the script.
+    It parses the command-line arguments, checks if the input directory exists and if the output format is supported.
+    If the output directory does not exist, it creates it.
+    It then finds all images in the input directory (recursively if specified), and for each image, it converts it to the specified format and saves it in the output directory.
+    If the output image already exists and overwrite mode is not enabled, it skips the image.
+    """
     args = parse_arguments()
 
     input_dir = os.path.abspath(args.input_dir)
